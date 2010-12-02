@@ -15,32 +15,17 @@
 
 % faker:name() and family.
 %----------------------------------------------------------------------------
+first_name() -> sample(?FIRST_NAMES).
+last_name()  -> sample(?LAST_NAMES).
+prefix()     -> sample(?PREFIXES).
+suffix()     -> sample(?SUFFIXES).
+
 name() ->
     case rand(10) of
-        0 -> prefix() ++ " " ++ first_name() ++ " " ++ last_name();
-        1 -> first_name() ++ " " ++ last_name() ++ " " ++ suffix();
+        0 -> prefix()     ++ " " ++ first_name() ++ " " ++ last_name();
+        1 -> first_name() ++ " " ++ last_name()  ++ " " ++ suffix();
         _ -> first_name() ++ " " ++ last_name()
     end.
-
-first_name() ->
-    Name = sample(?FIRST_NAMES),
-    case is_atom(Name) of
-        true  -> atom_to_list(Name);
-        false -> Name
-    end.
-
-last_name() ->
-    Name = sample(?LAST_NAMES),
-    case is_atom(Name) of
-        true  -> atom_to_list(Name);
-        false -> Name
-    end.
-
-prefix() ->
-    atom_to_list(sample(?PREFIXES)).
-
-suffix() ->
-    atom_to_list(sample(?SUFFIXES)).
 
 % faker:words() and family.
 %----------------------------------------------------------------------------
@@ -61,7 +46,7 @@ sentence() ->
 
 sentence(MinWordCount) ->
     Words = words(MinWordCount + rand(6)),
-    Sentence = string:join([atom_to_list(W) || W <- Words], " "),
+    Sentence = string:join([W || W <- Words], " "),
     [string:to_upper(hd(Sentence)) | tl(Sentence)] ++ ".".
 
 sentences() ->
