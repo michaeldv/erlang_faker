@@ -1,3 +1,5 @@
+-define(ZIP_FORMATS, [ "#####", "#####-####" ]).
+
 -define(STATES,
     [ "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
     "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -28,35 +30,37 @@
     "haven", "side", "shire" ]).
 
 -define(STREET_SUFFIX,
-    [ "Alley", "Avenue", "Branch", "Bridge", "Brook", "Brooks", "Burg",
-    "Burgs", "Bypass", "Camp", "Canyon", "Cape", "Causeway", "Center",
-    "Centers", "Circle", "Circles", "Cliff", "Cliffs", "Club", "Common",
-    "Corner", "Corners", "Course", "Court", "Courts", "Cove", "Coves",
-    "Creek", "Crescent", "Crest", "Crossing", "Crossroad", "Curve", "Dale",
-    "Dam", "Divide", "Drive", "Drives", "Estate", "Estates", "Expressway",
-    "Extension", "Extensions", "Fall", "Falls", "Ferry", "Field", "Fields",
-    "Flat", "Flats", "Ford", "Fords", "Forest", "Forge", "Forges", "Fork",
-    "Forks", "Fort", "Freeway", "Garden", "Gardens", "Gateway", "Glen",
-    "Glens", "Green", "Greens", "Grove", "Groves", "Harbor", "Harbors",
-    "Haven", "Heights", "Highway", "Hill", "Hills", "Hollow", "Inlet",
-    "Island", "Islands", "Isle", "Junction", "Junctions", "Key", "Keys",
-    "Knoll", "Knolls", "Lake", "Lakes", "Land", "Landing", "Lane", "Light",
-    "Lights", "Loaf", "Lock", "Locks", "Lodge", "Loop", "Mall", "Manor",
-    "Manors", "Meadow", "Meadows", "Mews", "Mill", "Mills", "Mission",
-    "Motorway", "Mount", "Mountain", "Mountains", "Neck", "Orchard", "Oval",
-    "Overpass", "Park", "Parks", "Parkway", "Parkways", "Pass", "Passage",
-    "Path", "Pike", "Pine", "Pines", "Place", "Plain", "Plains", "Plaza",
-    "Point", "Points", "Port", "Ports", "Prairie", "Radial", "Ramp", "Ranch",
-    "Rapid", "Rapids", "Rest", "Ridge", "Ridges", "River", "Road", "Roads",
+    [ "Avenue", "Court", "Lane", "Drive", "Parkway", "Road", "Street", "Way" ]).
+
+-define(STREET_SUFFIX_EX,
+    [ "Alley", "Branch", "Bridge", "Brook", "Brooks", "Burg", "Burgs",
+    "Bypass", "Camp", "Canyon", "Cape", "Causeway", "Center", "Centers",
+    "Circle", "Circles", "Cliff", "Cliffs", "Club", "Common", "Corner",
+    "Corners", "Course", "Courts", "Cove", "Coves", "Creek", "Crescent",
+    "Crest", "Crossing", "Crossroad", "Curve", "Dale", "Dam", "Divide",
+    "Drives", "Estate", "Estates", "Expressway", "Extension", "Extensions",
+    "Fall", "Falls", "Ferry", "Field", "Fields", "Flat", "Flats", "Ford",
+    "Fords", "Forest", "Forge", "Forges", "Fork", "Forks", "Fort", "Freeway",
+    "Garden", "Gardens", "Gateway", "Glen", "Glens", "Green", "Greens",
+    "Grove", "Groves", "Harbor", "Harbors", "Haven", "Heights", "Highway",
+    "Hill", "Hills", "Hollow", "Inlet", "Island", "Islands", "Isle",
+    "Junction", "Junctions", "Key", "Keys", "Knoll", "Knolls", "Lake",
+    "Lakes", "Land", "Landing", "Light", "Lights", "Loaf", "Lock", "Locks",
+    "Lodge", "Loop", "Mall", "Manor", "Manors", "Meadow", "Meadows", "Mews",
+    "Mill", "Mills", "Mission", "Motorway", "Mount", "Mountain", "Mountains",
+    "Neck", "Orchard", "Oval", "Overpass", "Park", "Parks", "Parkways", "Pass",
+    "Passage", "Path", "Pike", "Pine", "Pines", "Place", "Plain", "Plains",
+    "Plaza", "Point", "Points", "Port", "Ports", "Prairie", "Radial", "Ramp",
+    "Ranch", "Rapid", "Rapids", "Rest", "Ridge", "Ridges", "River", "Roads",
     "Route", "Row", "Rue", "Run", "Shoal", "Shoals", "Shore", "Shores",
     "Skyway", "Spring", "Springs", "Spur", "Spurs", "Square", "Squares",
-    "Station", "Stravenue", "Stream", "Street", "Streets", "Summit", "Terrace",
+    "Station", "Stravenue", "Stream", "Streets", "Summit", "Terrace",
     "Throughway", "Trace", "Track", "Trafficway", "Trail", "Tunnel",
     "Turnpike", "Underpass", "Union", "Unions", "Valley", "Valleys", "Via",
     "Viaduct", "View", "Views", "Village", "Villages", "Ville", "Vista",
-    "Walk", "Walks", "Wall", "Way", "Ways", "Well", "Wells" ]).
+    "Walk", "Walks", "Wall", "Ways", "Well", "Wells" ]).
 
--define(SEC_ADDR, [ "Apt. ###", "Suite ###" ]).
+-define(SUITE, [ "Apt. ###", "Suite ###" ]).
 
 -define(UK_COUNTY,
     [ "Avon", "Bedfordshire", "Berkshire", "Borders", "Buckinghamshire",
@@ -85,7 +89,7 @@
     "Mott Haven/Port Morris", "Kingsbridge Heights", "Bronxdale", "Pennypack",
     "Bridesburg", "Allegheny West", "Bushwick South", "Dyker Heights",
     "Ocean Parkway South", "Summerlin North", "Seven Hills Area",
-    "Greater Las Vegas National", "phoenix", "Central Chandler",
+    "Greater Las Vegas National", "Phoenix", "Central Chandler",
     "South of Bell Road", "River Heights", "White Plains Central",
     "Mount Kisco West", "Pound Ridge East", "Babylon Bayside",
     "Sagaponack Seaside", "South of Lake Ave", "Far Rockaway/Bayswater",

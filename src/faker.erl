@@ -7,7 +7,8 @@
 -module(faker).
 -export([name/0, first_name/0, last_name/0, prefix/0, suffix/0]).
 -export([words/0, words/1, sentence/0, sentence/1, sentences/0, sentences/1, paragraph/0, paragraph/1, paragraphs/0, paragraphs/1]).
--export([us_state/0, us_state_abbr/0, city_prefix/0, city_suffix/0, street_suffix/0, city/0, street_name/0]).
+-export([zip_code/0, us_state/0, us_state_abbr/0, city_prefix/0, city_suffix/0, street_suffix/0, city/0, street_name/0, street_address/0, street_address/1, address/0]).
+-export([uk_county/0, uk_country/0, uk_postcode/0, neighborhood/0]).
 
 -include("names.hrl").
 -include("lorem.hrl").
@@ -81,11 +82,17 @@ paragraphs(ParagraphCount, Acc) ->
 
 % faker:address() and family.
 %----------------------------------------------------------------------------
+zip_code()      -> numerize(sample(?ZIP_FORMATS)).
 us_state()      -> sample(?STATES).
 us_state_abbr() -> sample(?STATES_ABBR).
 city_prefix()   -> sample(?CITY_PREFIXES).
 city_suffix()   -> sample(?CITY_SUFFIXES).
-street_suffix() -> sample(?STREET_SUFFIX).
+
+street_suffix() ->
+    case rand(4) of
+        0 -> sample(?STREET_SUFFIX_EX);
+        _ -> sample(?STREET_SUFFIX)
+    end.
 
 city() ->
     case rand(4) of
@@ -101,6 +108,25 @@ street_name() ->
         _ -> first_name() ++ " " ++ street_suffix()
     end.
 
+street_address() ->
+    Format = string:copies("#", rand(3)) ++ "###",
+    numerize(Format) ++ " " ++ street_name().
+
+street_address(true) ->
+    street_address() ++ ", " ++ numerize(sample(?SUITE));
+
+street_address(false) ->
+    street_address().
+
+address() ->
+    street_address(rand(9) < 3) ++ "\n" ++
+    city() ++ ", " ++ us_state_abbr() ++ " " ++ zip_code().
+
+uk_county()    -> sample(?UK_COUNTY).
+uk_country()   -> sample(?UK_COUNTRY).
+uk_postcode()  -> alphanumerize(sample(?UK_POSTCODE)).
+neighborhood() -> sample(?NEIGHBORHOOD).
+
 % Utility methods.
 %----------------------------------------------------------------------------
 rand(N) ->
@@ -108,3 +134,12 @@ rand(N) ->
 
 sample(List) ->
     lists:nth(random:uniform(length(List)), List).
+
+numerize(Format) ->
+    [ case X of $# -> random:uniform(9) + 48; _ -> X end || X <- Format ].
+
+alphabetize(Format) ->
+    [ case X of $? -> random:uniform(26) + 64; _ -> X end || X <- Format ].
+
+alphanumerize(Format) ->
+    numerize(alphabetize(Format)).
