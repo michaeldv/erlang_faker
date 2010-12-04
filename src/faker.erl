@@ -3,12 +3,39 @@
 %% Faker library is freely distributable under the terms of MIT license.
 %% See LICENSE file or http://www.opensource.org/licenses/mit-license.php
 %%---------------------------------------------------------------------------
-
 -module(faker).
--export([name/0, first_name/0, last_name/0, prefix/0, suffix/0]).
--export([words/0, words/1, sentence/0, sentence/1, sentences/0, sentences/1, paragraph/0, paragraph/1, paragraphs/0, paragraphs/1]).
--export([zip_code/0, us_state/0, us_state_abbr/0, city_prefix/0, city_suffix/0, street_suffix/0, city/0, street_name/0, street_address/0, street_address/1, address/0]).
--export([uk_county/0, uk_country/0, uk_postcode/0, neighborhood/0]).
+-export([name/0,
+         first_name/0,
+         last_name/0,
+         prefix/0,
+         suffix/0]).
+-export([words/0, words/1,
+         sentence/0, sentence/1,
+         sentences/0, sentences/1,
+         paragraph/0, paragraph/1,
+         paragraphs/0, paragraphs/1]).
+-export([zip_code/0,
+         us_state/0,
+         us_state_abbr/0,
+         city_prefix/0,
+         city_suffix/0,
+         street_suffix/0,
+         city/0,
+         street_name/0,
+         street_address/0, street_address/1,
+         address/0]).
+-export([uk_county/0,
+         uk_country/0,
+         uk_postcode/0,
+         neighborhood/0]).
+-export([email/0,
+         email/1,
+         free_email/0, free_email/1,
+         user_name/0, user_name/1,
+         username/0, username/1,
+         domain_name/0,
+         domain_word/0,
+         domain_suffix/0]).
 
 -include("names.hrl").
 -include("lorem.hrl").
@@ -127,6 +154,37 @@ uk_country()   -> sample(?UK_COUNTRY).
 uk_postcode()  -> alphanumerize(sample(?UK_POSTCODE)).
 neighborhood() -> sample(?NEIGHBORHOOD).
 
+% faker:email() and family.
+%----------------------------------------------------------------------------
+email() -> ok.
+email(Name) -> Name.
+
+free_email() -> ok.
+free_email(Name) -> Name.
+
+user_name() ->
+    case rand(2) of
+        0 -> user_name(first_name(), cleanup);
+        _ -> user_name(first_name() ++ " " ++ last_name())
+    end.
+
+user_name(Name) ->
+    Words = re:split(Name, "\s", [{return, list}]),
+    Username = string:join(shuffle(Words), sample([".", "_"])),
+    user_name(Username, cleanup).
+
+user_name(Name, cleanup) ->
+    gsub(string:to_lower(Name), "[^a-zA-Z_.]", "").
+
+% Aliases.
+username()     -> user_name().
+username(Name) -> user_name(Name).
+
+domain_name() -> ok.
+domain_word() -> ok.
+domain_suffix() -> ok.
+
+
 % Utility methods.
 %----------------------------------------------------------------------------
 rand(N) ->
@@ -143,3 +201,16 @@ alphabetize(Format) ->
 
 alphanumerize(Format) ->
     numerize(alphabetize(Format)).
+
+% sub(String, Pattern, Replacement) ->
+%     re:replace(String, Pattern, Replacement, [{return, list}]).
+
+gsub(String, Pattern, Replacement) ->
+    re:replace(String, Pattern, Replacement, [global, {return, list}]).
+
+shuffle(List) when length(List) =< 0 ->
+    List;
+
+shuffle(List) ->
+    WithRandomKey = [{random:uniform(length(List)), X} || X <- List],
+    [X || {_, X} <- lists:sort(WithRandomKey)].
