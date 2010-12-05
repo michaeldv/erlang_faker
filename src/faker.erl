@@ -36,10 +36,14 @@
          domain_name/0,
          domain_word/0,
          domain_suffix/0]).
+-export([company/0,
+         catch_phrase/0,
+         bs/0]).
 
--include("names.hrl").
--include("lorem.hrl").
 -include("address.hrl").
+-include("company.hrl").
+-include("lorem.hrl").
+-include("names.hrl").
 
 % faker:name() and family.
 %----------------------------------------------------------------------------
@@ -174,7 +178,7 @@ user_name(Name) ->
     user_name(Username, cleanup).
 
 user_name(Name, cleanup) ->
-    gsub(string:to_lower(Name), "[^a-zA-Z_.]", "").
+    gsub(string:to_lower(Name), "[^a-z_.]", "").
 
 % Aliases.
 username()     -> user_name().
@@ -184,6 +188,20 @@ domain_name() -> ok.
 domain_word() -> ok.
 domain_suffix() -> ok.
 
+% faker:company_name() and family.
+%----------------------------------------------------------------------------
+company() ->
+    case rand(6) of
+        0 -> last_name() ++ "-"  ++ last_name();
+        1 -> last_name() ++ ", " ++ last_name() ++ " and " ++ last_name();
+        _ -> last_name() ++ " "  ++ sample(?COMPANY_SUFFIX)
+    end.
+
+catch_phrase() -> % Generate a buzzword-laden catch phrase.
+    sample(?CATCH_PRE) ++ " " ++ sample(?CATCH_MID) ++ " " ++ sample(?CATCH_POS).
+
+bs() -> % When a straight answer won't do, faker:bs() to the rescue!
+    sample(?BS_PRE) ++ " " ++ sample(?BS_MID) ++ " " ++ sample(?BS_POS).
 
 % Utility methods.
 %----------------------------------------------------------------------------
