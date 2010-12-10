@@ -4,48 +4,25 @@
 %% See LICENSE file or http://www.opensource.org/licenses/mit-license.php
 %%---------------------------------------------------------------------------
 -module(faker).
--export([name/0,
-         first_name/0,
-         last_name/0,
-         prefix/0,
-         suffix/0]).
--export([words/0, words/1,
-         sentence/0, sentence/1,
-         sentences/0, sentences/1,
-         paragraph/0, paragraph/1,
-         paragraphs/0, paragraphs/1]).
--export([zip_code/0,
-         us_state/0,
-         us_state_abbr/0,
-         city_prefix/0,
-         city_suffix/0,
-         street_suffix/0,
-         city/0,
-         street_name/0,
-         street_address/0, street_address/1,
-         address/0]).
--export([uk_county/0,
-         uk_country/0,
-         uk_postcode/0,
-         neighborhood/0]).
--export([email/0,
-         email/1,
-         free_email/0, free_email/1,
-         user_name/0, user_name/1,
-         username/0, username/1,
-         domain_name/0,
-         domain_word/0,
-         domain_suffix/0]).
--export([company/0,
-         catch_phrase/0,
-         bs/0]).
+-export([name/0, first_name/0, last_name/0, prefix/0, suffix/0]).
+-export([words/0, words/1, sentence/0, sentence/1, sentences/0, sentences/1,
+         paragraph/0, paragraph/1, paragraphs/0, paragraphs/1]).
+-export([zip_code/0, us_state/0, us_state_abbr/0, city_prefix/0,
+         city_suffix/0, street_suffix/0, city/0, street_name/0,
+         street_address/0,street_address/1, address/0]).
+-export([uk_county/0, uk_country/0, uk_postcode/0, neighborhood/0]).
+-export([company_name/0, catch_phrase/0, bs/0]).
+-export([email/0, email/1, free_email/0, free_email/1, user_name/0,
+         user_name/1, domain_name/0, domain_word/0, domain_suffix/0]).
+-export([phone_number/0, short_phone_number/0]).
+-export([company/0, username/0, username/1, domain/0, phone/0]).
 
 -include("address.hrl").
 -include("company.hrl").
 -include("lorem.hrl").
 -include("names.hrl").
 
-% faker:name() and family.
+% Names.
 %----------------------------------------------------------------------------
 first_name() -> sample(?FIRST_NAMES).
 last_name()  -> sample(?LAST_NAMES).
@@ -59,7 +36,7 @@ name() ->
         _ -> first_name() ++ " " ++ last_name()
     end.
 
-% faker:words() and family.
+% Lorem Ipsum.
 %----------------------------------------------------------------------------
 words() ->
     words(3, []).
@@ -111,7 +88,7 @@ paragraphs(ParagraphCount, Acc) ->
         _Less -> paragraphs(ParagraphCount, [paragraph() | Acc])
     end.
 
-% faker:address() and family.
+% Addresses.
 %----------------------------------------------------------------------------
 zip_code()      -> numerize(sample(?ZIP_FORMATS)).
 us_state()      -> sample(?STATES).
@@ -158,39 +135,9 @@ uk_country()   -> sample(?UK_COUNTRY).
 uk_postcode()  -> alphanumerize(sample(?UK_POSTCODE)).
 neighborhood() -> sample(?NEIGHBORHOOD).
 
-% faker:email() and family.
+% Enterprisey.
 %----------------------------------------------------------------------------
-email() -> ok.
-email(Name) -> Name.
-
-free_email() -> ok.
-free_email(Name) -> Name.
-
-user_name() ->
-    case rand(2) of
-        0 -> user_name(first_name(), cleanup);
-        _ -> user_name(first_name() ++ " " ++ last_name())
-    end.
-
-user_name(Name) ->
-    Words = re:split(Name, "\s", [{return, list}]),
-    Username = string:join(shuffle(Words), sample([".", "_"])),
-    user_name(Username, cleanup).
-
-user_name(Name, cleanup) ->
-    gsub(string:to_lower(Name), "[^a-z_.]", "").
-
-% Aliases.
-username()     -> user_name().
-username(Name) -> user_name(Name).
-
-domain_name() -> ok.
-domain_word() -> ok.
-domain_suffix() -> ok.
-
-% faker:company_name() and family.
-%----------------------------------------------------------------------------
-company() ->
+company_name() ->
     case rand(6) of
         0 -> last_name() ++ "-"  ++ last_name();
         1 -> last_name() ++ ", " ++ last_name() ++ " and " ++ last_name();
@@ -203,7 +150,78 @@ catch_phrase() -> % Generate a buzzword-laden catch phrase.
 bs() -> % When a straight answer won't do, faker:bs() to the rescue!
     sample(?BS_PRE) ++ " " ++ sample(?BS_MID) ++ " " ++ sample(?BS_POS).
 
-% Utility methods.
+% Internet.
+%----------------------------------------------------------------------------
+email() ->
+    user_name() ++ "@" ++ domain_name().
+
+email(Name) ->
+    user_name(Name) ++ "@" ++ domain_name().
+
+free_email() ->
+    user_name() ++ "@" ++ sample(?FREE_EMAIL).
+
+free_email(Name) ->
+    user_name(Name) ++ "@" ++ sample(?FREE_EMAIL).
+
+user_name() ->
+    case rand(2) of
+        0 -> normalize(first_name());
+        _ -> user_name(first_name() ++ " " ++ last_name())
+    end.
+
+user_name(Name) ->
+    Words = re:split(Name, "\s", [{return, list}]),
+    Username = string:join(shuffle(Words), sample([".", "_"])),
+    normalize(Username).
+
+domain_name() ->
+    domain_word() ++ "." ++ domain_suffix().
+
+domain_word() ->
+    {Name, _} = lists:splitwith(fun(X) -> X /= 32 end, company_name()),
+    normalize(Name).
+
+domain_suffix() ->
+    sample(?DOMAIN_SUFFIXES).
+
+% Phone numbers.
+%----------------------------------------------------------------------------
+phone_number() ->
+    Format = case rand(20) of
+    0  -> "###-###-#### x#####";
+    1  -> "###-###-#### x####";
+    2  -> "###-###-#### x###";
+    3  -> "###-###-####";
+    4  -> "###-###-####";
+    5  -> "###.###.#### x#####";
+    6  -> "###.###.#### x####";
+    7  -> "###.###.#### x###";
+    8  -> "###.###.####";
+    9  -> "###.###.####";
+    10 -> "(###)###-#### x#####";
+    11 -> "(###)###-#### x####";
+    12 -> "(###)###-#### x###";
+    13 -> "(###)###-####";
+    14 -> "(###)###-####";
+    15 -> "1-###-###-#### x#####";
+    16 -> "1-###-###-#### x####";
+    17 -> "1-###-###-#### x###";
+    _  -> "1-###-###-####"
+    end,
+    numerize(Format).
+
+short_phone_number() ->
+    numerize("###-###-####").
+
+% Aliases.
+company() -> company_name().
+username() -> user_name().
+username(Name) -> user_name(Name).
+domain() -> domain_name().
+phone() -> phone_number().
+
+% Private utility methods.
 %----------------------------------------------------------------------------
 rand(N) ->
     random:uniform(N) - 1.
@@ -211,24 +229,24 @@ rand(N) ->
 sample(List) ->
     lists:nth(random:uniform(length(List)), List).
 
-numerize(Format) ->
-    [ case X of $# -> random:uniform(9) + 48; _ -> X end || X <- Format ].
+numerize(Format) -> % No 0s: avoid leading 0 in phones numbers and addresses.
+    [ case X of $# -> $1 + rand(9); _ -> X end || X <- Format ].
 
 alphabetize(Format) ->
-    [ case X of $? -> random:uniform(26) + 64; _ -> X end || X <- Format ].
+    [ case X of $? -> $A + rand(26); _ -> X end || X <- Format ].
 
 alphanumerize(Format) ->
     numerize(alphabetize(Format)).
 
-% sub(String, Pattern, Replacement) ->
-%     re:replace(String, Pattern, Replacement, [{return, list}]).
+normalize(String) ->
+    gsub(string:to_lower(String), "[^a-z_.]", "").
 
-gsub(String, Pattern, Replacement) ->
-    re:replace(String, Pattern, Replacement, [global, {return, list}]).
+gsub(String, Regex, Replacement) ->
+    re:replace(String, Regex, Replacement, [global, {return, list}]).
 
-shuffle(List) when length(List) =< 0 ->
+shuffle(List) when length(List) =< 1 ->
     List;
 
 shuffle(List) ->
-    WithRandomKey = [{random:uniform(length(List)), X} || X <- List],
+    WithRandomKey = [{random:uniform(), X} || X <- List],
     [X || {_, X} <- lists:sort(WithRandomKey)].

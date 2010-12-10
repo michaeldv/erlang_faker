@@ -1,5 +1,4 @@
 -define(ZIP_FORMATS, [ "#####", "#####-####" ]).
-
 -define(STATES,
     [ "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
     "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -102,3 +101,6 @@
     "White Oak South of Columbia Pike", "Rockville East of Hungerford Dr",
     "Cleveland Park" ]).
 
+-define(FREE_EMAIL, [ "gmail.com", "yahoo.com", "hotmail.com" ]).
+
+-define(DOMAIN_SUFFIXES, [ "com", "org", "net", "ca", "us", "co.uk", "info" ]).
